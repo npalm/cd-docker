@@ -1,0 +1,36 @@
+jenkins:
+  build: ./jenkins
+  ports:
+    - "8080:8080"
+  volumes:
+    - ./.data/jenkins:/var/jenkins_home
+  extra_hosts:
+    dockerhost: 172.17.42.1
+  environment:
+    - DOCKER_HOST=tcp://dockerhost:2375
+    - VOLUME_MOUNT_POINT=/home/niek/projects/devoxx/cd/docker/.data/jenkins/
+sonardb:
+  image: postgres:9
+  environment:
+    - POSTGRES_USER=sonar
+    - POSTGRES_PASSWORD=secret
+  volumes:
+    - ./.data/sonardb/data:/var/lib/postgresql/data
+sonar:
+  image: sonarqube:5.1.1
+  links:
+    - sonardb:db
+  environment:
+    - SONARQUBE_JDBC_USERNAME=sonar
+    - SONARQUBE_JDBC_PASSWORD=secret
+    - SONARQUBE_JDBC_URL=jdbc:postgresql://db/sonar
+  ports:
+    - "9000:9000"
+artifactory:
+  build: ./artifactory
+  ports:
+    - "8081:8081"
+  volumes:
+    - ./.data/artifactory/logs:/artifactory/logs 
+    - ./.data/artifactory/data:/artifactory/data 
+    - ./.data/artifactory/backup:/artifactory/backup 

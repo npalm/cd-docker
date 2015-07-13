@@ -1,0 +1,5 @@
+
+
+docker run --rm -t -i -w /workspace -v /home/niek/projects/devoxx/docker/node/stickynote-web:/workspace \
+  -e 'DISPLAY=:0' npalm/node \
+  bash -c "INIT=/usr/local/bin/init-container ; [ -e \$INIT ] && \$INIT ; pwd ; echo "Y" | npm install ; npm test" \
